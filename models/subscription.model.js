@@ -20,11 +20,11 @@ const subscriptionSchema = new mongoose.Schema({
   },
   frequency:{
     type: String,
-    enum: ['Monthly', 'Yearly', 'Weekly', 'Daily'],
+    enum: ['daily','weekly','monthly','yearly'],
   },
   category:{
     type: String,
-    enum: ['Entertainment','Sports', 'Lifestyle', 'Productivity', 'Education', 'Finance', 'Politics', 'Health', 'Other'],
+    enum: ['entertainment','sports', 'lifestyle', 'productivity', 'education', 'finance', 'politics', 'health', 'other'],
     required: true,
   },
   paymentMethod:{
@@ -34,8 +34,8 @@ const subscriptionSchema = new mongoose.Schema({
   },
   status:{
     type: String,
-    enum: ['Active', 'Inactive', 'Cancelled', 'Expired'],
-    default: 'Active',
+    enum: ['active', 'inactive', 'cancelled', 'expired'],
+    default: 'active',
   },
   startDate:{
     type: Date,
@@ -68,10 +68,10 @@ const subscriptionSchema = new mongoose.Schema({
 subscriptionSchema.pre('save', function(next){
   if(!this.renewalDate){
     const renewalPeriods = {
-      'Daily': 1,
-      'Weekly': 7,
-      'Monthly': 30,
-      'Yearly': 365,
+      'daily': 1,
+      'weekly': 7,
+      'monthly': 30,
+      'yearly': 365,
     };
 
     this.renewalDate = new Date(this.startDate);
@@ -81,7 +81,7 @@ subscriptionSchema.pre('save', function(next){
   // Auto-update the status if renewal date has passed
   
   if(this.renewalDate < new Date()){
-    this.status = 'Expired';
+    this.status = 'expired';
   }
 
   next();
